@@ -90,3 +90,99 @@ def delete_task():
     
     cursor.close()
     conn.close()
+
+def filter_tasks_by_status():
+    conn = db_connection.db_conn()
+    cursor = conn.cursor()
+
+    status = input('Enter the status (Pending, In Progress, Completed): ').strip().title()
+
+    query = 'SELECT * FROM tasks WHERE status = %s'
+    value = (status,)
+
+    cursor.execute(query, value)
+    results = cursor.fetchall()
+
+    if results:
+        for result in results:
+            print(result)
+    else:
+        print("No tasks found with this status.")
+
+    cursor.close()
+    conn.close()
+
+
+def filter_tasks_by_priority():
+    conn = db_connection.db_conn()
+    cursor = conn.cursor()
+
+    priority = input('Enter the priority (High, Medium, Low): ').strip().title()
+
+    query = 'SELECT * FROM tasks WHERE priority = %s'
+    value = (priority,)
+
+    cursor.execute(query, value)
+    results = cursor.fetchall()
+
+    if results:
+        for result in results:
+            print(result)
+    else:
+        print("No tasks found with this priority.")
+
+    cursor.close()
+    conn.close()
+
+
+def search_task():
+    conn = db_connection.db_conn()
+    cursor = conn.cursor()
+
+    print("\n========== SEARCH TASK ==========")
+    print("1. Search by Task ID")
+    print("2. Search by Task Title")
+    print("3. Exit Search")
+
+    choice = input("Choose your search filter: ")
+
+    if choice == "1":
+        task_id = int(input("Enter Task ID: "))
+        query = "SELECT * FROM tasks WHERE task_id = %s"
+        values = (task_id,)
+
+    elif choice == "2":
+        print("\n1. Exact Match")
+        print("2. Partial Match")
+
+        search_choice = input("Choose search type: ")
+        title = input("Enter Task Title: ")
+
+        if search_choice == "1":
+            query = "SELECT * FROM tasks WHERE title = %s"
+            values = (title,)
+
+        else:
+            query = "SELECT * FROM tasks WHERE title LIKE %s"
+            values = ("%" + title + "%",)
+
+    else:
+        print("Exiting Task Search.")
+        cursor.close()
+        conn.close()
+        return
+
+    cursor.execute(query, values)
+    results = cursor.fetchall()
+
+    if results:
+        print("\n========== SEARCH RESULTS ==========")
+
+        for result in results:
+            print(result)
+
+    else:
+        print("No tasks found.")
+
+    cursor.close()
+    conn.close()
