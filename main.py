@@ -1,18 +1,26 @@
-print("===================================")
-print("   EMPLOYEE TASK TRACKING SYSTEM")
-print("===================================")
-
-print("1. Add Employee")
-print("2. View Employees")
-print("3. Create Task")
-print("4. View Tasks")
-print("5. Assign Task")
-print("6. Update Task Status")
-print("7. Add Comment")
-print("8. View Reports")
-print("9. Exit")
-
-print("===================================")
+import admin
+import employee_panel
 
 while True:
-    pass
+    print("\n========================================")
+    print("      EMPLOYEE TASK TRACKING SYSTEM")
+    print("========================================")
+    print("1. Admin Panel")
+    print("2. Employee Panel")
+    print("3. Exit")
+    print("========================================")
+
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        admin.admin_menu()
+
+    elif choice == "2":
+        employee_panel.employee_menu()
+
+    elif choice == "3":
+        print("Thank you for using the system!")
+        break
+
+    else:
+        print("Invalid choice!")
