@@ -1,32 +1,31 @@
-import mysql.connector as db
+import db_connection
 
-conn = db.connect(
-    user='root',
-    password='YOUR_PASSWORD',
-    host='localhost',
-    database='vcubemysql'
-)
+def add_comment(employee_id):
+    conn = db_connection.db_conn()
+    cursor = conn.cursor()
 
-cursor = conn.cursor()
+    task_id = int(input("Enter Task ID: "))
 
-# Display all employees
-cursor.execute('SELECT * FROM employee')
-result = cursor.fetchall()
-print(result)
+    query = "SELECT * FROM assigned_tasks WHERE task_id = %s AND employee_id = %s"
+    cursor.execute(query, (task_id, employee_id))
 
-# Update the salary
-cursor.execute(
-    'UPDATE employee SET salary = 300000 WHERE employee_id = 1'
-)
-conn.commit()
+    result = cursor.fetchone()
 
-# Display the updated employee
-cursor.execute(
-    'SELECT * FROM employee WHERE employee_id = 1'
-)
-result = cursor.fetchone()
-print(result)
+    if result:
+        comment_text = input("Enter your comment: ")
 
-# Close the cursor and connection
-cursor.close()
-conn.close()
+        query = """
+        INSERT INTO comments (task_id, employee_id, comment_text, created_at)
+        VALUES (%s, %s, %s, NOW())
+        """
+
+        cursor.execute(query, (task_id, employee_id, comment_text))
+        conn.commit()
+
+        print("Comment added successfully!")
+
+    else:
+        print("This task is not assigned to you.")
+
+    cursor.close()
+    conn.close()

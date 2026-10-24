@@ -283,3 +283,120 @@ def view_overdue_tasks():
 
     cursor.close()
     conn.close()
+
+def view_my_tasks_id(employee_id):
+    conn = db_connection.db_conn()
+    cursor = conn.cursor()
+
+    query = """
+        SELECT tasks.task_id, tasks.title, tasks.description,
+               tasks.priority, tasks.due_date, tasks.status
+        FROM tasks
+        JOIN assigned_tasks
+            ON tasks.task_id = assigned_tasks.task_id
+        WHERE assigned_tasks.employee_id = %s
+    """
+
+    value = (employee_id,)
+
+    cursor.execute(query, value)
+    results = cursor.fetchall()
+
+    print("\n========== MY TASKS ==========")
+
+    if results:
+        for result in results:
+            print("Task ID:", result[0])
+            print("Task Title:", result[1])
+            print("Description:", result[2])
+            print("Priority:", result[3])
+            print("Due Date:", result[4])
+            print("Status:", result[5])
+            print("------------------------------")
+    else:
+        print("No tasks assigned to you.")
+
+    cursor.close()
+    conn.close()
+
+
+def update_task_status_id(employee_id):
+    conn = db_connection.db_conn()
+    cursor = conn.cursor()
+
+    task_id = int(input("Enter Task ID: "))
+
+    query = """
+        SELECT task_id
+        FROM assigned_tasks
+        WHERE task_id = %s AND employee_id = %s
+    """
+
+    cursor.execute(query, (task_id, employee_id))
+    result = cursor.fetchone()
+
+    if result:
+        print("\nSelect New Status:")
+        print("1. Pending")
+        print("2. In Progress")
+        print("3. Completed")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            status = "Pending"
+        elif choice == "2":
+            status = "In Progress"
+        elif choice == "3":
+            status = "Completed"
+        else:
+            print("Invalid choice!")
+            cursor.close()
+            conn.close()
+            return
+
+        query = """
+            UPDATE tasks
+            SET status = %s
+            WHERE task_id = %s
+        """
+
+        cursor.execute(query, (status, task_id))
+        conn.commit()
+
+        print("Task status updated successfully!")
+
+    else:
+        print("You are not authorized to update this task.")
+        print("The task may not exist or may not be assigned to you.")
+
+    cursor.close()
+    conn.close()
+
+def view_completed_tasks(employee_id):
+    conn = db_connection.db_conn()
+    cursor = conn.cursor()
+
+    query = """
+    SELECT tasks.*
+    FROM tasks
+    JOIN assigned_tasks
+    ON tasks.task_id = assigned_tasks.task_id
+    WHERE assigned_tasks.employee_id = %s
+    AND tasks.status = 'Completed'
+    """
+
+    cursor.execute(query, (employee_id,))
+    results = cursor.fetchall()
+
+    if results:
+        print("\n========== COMPLETED TASKS ==========")
+
+        for result in results:
+            print(result)
+
+    else:
+        print("No completed tasks found.")
+
+    cursor.close()
+    conn.close()

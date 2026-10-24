@@ -171,3 +171,21 @@ def delete_employee():
 
     cursor.close()
     conn.close()
+
+def view_employees_id(employee_id):
+    connection = db_connection.db_conn()
+    cursor = connection.cursor()
+
+    query = "SELECT * FROM EMPLOYEES WHERE ID = %s"
+    value = (employee_id,)
+
+    cursor.execute(query, value)
+    result = cursor.fetchone()
+
+    if result:
+        print("Employee Details:", result)
+    else:
+        print("Employee ID not found.")
+
+    cursor.close()
+    connection.close()
