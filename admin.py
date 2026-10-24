@@ -72,7 +72,7 @@ while True:
                 task.view_task()
 
             elif task_choice == "3":
-                print("Update Task feature is not implemented yet.")
+                task.update_task()
 
             elif task_choice == "4":
                 task.delete_task()
@@ -114,7 +114,7 @@ while True:
                 assignment.view_assignments()
 
             elif assign_choice == "3":
-                print("View Tasks by Employee feature is not implemented yet.")
+                assignment.view_tasks_by_employee()
 
             elif assign_choice == "4":
                 print("Reassign Task feature is not implemented yet.")

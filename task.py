@@ -186,3 +186,70 @@ def search_task():
 
     cursor.close()
     conn.close()
+
+def update_task():
+    conn = db_connection.db_conn()
+    cursor = conn.cursor()
+
+    task_id = int(input("Enter Task ID to update: "))
+
+    query = "SELECT * FROM tasks WHERE task_id = %s"
+    values = (task_id,)
+
+    cursor.execute(query, values)
+    result = cursor.fetchone()
+
+    if result:
+        print("\nTask Details:")
+        print(result)
+
+        print("\nWhat do you want to update?")
+        print("1. Task Title")
+        print("2. Task Description")
+        print("3. Task Priority")
+        print("4. Task Due Date")
+        print("5. Task Status")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            new_value = input("Enter new task title: ")
+            query = "UPDATE tasks SET title = %s WHERE task_id = %s"
+
+        elif choice == "2":
+            new_value = input("Enter new task description: ")
+            query = "UPDATE tasks SET description = %s WHERE task_id = %s"
+
+        elif choice == "3":
+            new_value = input("Enter new priority (High, Medium, Low): ").strip().title()
+            query = "UPDATE tasks SET priority = %s WHERE task_id = %s"
+
+        elif choice == "4":
+            new_value = input("Enter new due date (YYYY-MM-DD): ")
+            query = "UPDATE tasks SET due_date = %s WHERE task_id = %s"
+
+        elif choice == "5":
+            new_value = input("Enter new status (Pending, In Progress, Completed): ").strip().title()
+            query = "UPDATE tasks SET status = %s WHERE task_id = %s"
+
+        else:
+            print("Invalid choice!")
+            cursor.close()
+            conn.close()
+            return
+
+        values = (new_value, task_id)
+        cursor.execute(query, values)
+        conn.commit()
+
+        if cursor.rowcount > 0:
+            print("Task updated successfully!")
+        else:
+            print("No changes were made to the task.")
+
+    else:
+        print("Task ID not found!")
+
+    cursor.close()
+    conn.close()
+
