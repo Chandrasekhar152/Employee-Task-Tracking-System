@@ -99,3 +99,28 @@ def reassign_task():
 
     cursor.close()
     conn.close()
+
+def remove_assignment():
+    conn = db_connection.db_conn()
+    cursor = conn.cursor()
+
+    assignment_id = int(input("Enter Assignment ID: "))
+
+    query = "SELECT * FROM assigned_tasks WHERE assignment_id = %s"
+    value = (assignment_id,)
+
+    cursor.execute(query, value)
+    result = cursor.fetchone()
+
+    if result:
+        query = "DELETE FROM assigned_tasks WHERE assignment_id = %s"
+        cursor.execute(query, value)
+        conn.commit()
+
+        print("Assignment removed successfully!")
+
+    else:
+        print("Assignment ID not found.")
+
+    cursor.close()
+    conn.close()

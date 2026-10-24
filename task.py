@@ -253,3 +253,33 @@ def update_task():
     cursor.close()
     conn.close()
 
+def view_overdue_tasks():
+    conn = db_connection.db_conn()
+    cursor = conn.cursor()
+
+    query = """
+        SELECT task_id, title, description, priority, due_date, status
+        FROM tasks
+        WHERE due_date < CURDATE()
+        AND status != 'Completed'
+    """
+
+    cursor.execute(query)
+    results = cursor.fetchall()
+
+    print("\n========== OVERDUE TASKS ==========")
+
+    if results:
+        for result in results:
+            print("Task ID:", result[0])
+            print("Task Title:", result[1])
+            print("Description:", result[2])
+            print("Priority:", result[3])
+            print("Due Date:", result[4])
+            print("Status:", result[5])
+            print("-----------------------------------")
+    else:
+        print("No overdue tasks found.")
+
+    cursor.close()
+    conn.close()

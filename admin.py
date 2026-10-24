@@ -87,7 +87,7 @@ while True:
                 task.filter_tasks_by_priority()
 
             elif task_choice == "8":
-                print("Overdue Tasks feature is not implemented yet.")
+                task.view_overdue_tasks()
 
             elif task_choice == "9":
                 break
@@ -117,10 +117,10 @@ while True:
                 assignment.view_tasks_by_employee()
 
             elif assign_choice == "4":
-                print("Reassign Task feature is not implemented yet.")
+                assignment.reassign_task()
 
             elif assign_choice == "5":
-                print("Remove Assignment feature is not implemented yet.")
+                assignment.remove_assignment()
 
             elif assign_choice == "6":
                 break
