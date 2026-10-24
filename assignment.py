@@ -70,3 +70,32 @@ def view_tasks_by_employee():
 
     cursor.close()
     conn.close()
+
+
+def reassign_task():
+    conn = db_connection.db_conn()
+    cursor = conn.cursor()
+
+    task_id = int(input("Enter Task ID: "))
+    employee_id = int(input("Enter New Employee ID: "))
+
+    query = "SELECT * FROM assigned_tasks WHERE task_id = %s"
+    values = (task_id,)
+
+    cursor.execute(query, values)
+    result = cursor.fetchone()
+
+    if result:
+        query = "UPDATE assigned_tasks SET employee_id = %s WHERE task_id = %s"
+        values = (employee_id, task_id)
+
+        cursor.execute(query, values)
+        conn.commit()
+
+        print("Task reassigned successfully!")
+
+    else:
+        print("Task ID is not assigned to any employee.")
+
+    cursor.close()
+    conn.close()
