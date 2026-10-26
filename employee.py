@@ -3,20 +3,35 @@ import db_connection
 def add_emp():
     emp_id = int(input("Enter employee id: "))
     emp_name = input("Enter employee name: ")
-    emp_email = input('Enter email: ')
+    emp_email = input("Enter email: ")
     emp_role = input("Enter employee role: ")
 
-    query = """ INSERT INTO EMPLOYEES (ID, NAME, ROLE, EMAIL, CREATED_AT) VALUES (%s, %s, %s, %s, NOW()) """
-    values = (emp_id, emp_name, emp_role, emp_email)
+    connection = db_connection.db_conn()
+    cursor = connection.cursor()
 
-    connection = db_connection.db_conn()    
+    query = "SELECT * FROM EMPLOYEES WHERE ID = %s"
+    cursor.execute(query, (emp_id,))
+    result = cursor.fetchone()
 
-    cursor = connection.cursor()    
+    if result:
+        print("Employee ID already exists!")
 
-    cursor.execute(query,values)
-    connection.commit()
+    else:
+        query = """
+        INSERT INTO EMPLOYEES
+        (ID, NAME, ROLE, EMAIL, CREATED_AT)
+        VALUES (%s, %s, %s, %s, NOW())
+        """
+        values = (emp_id, emp_name, emp_role, emp_email)
+
+        cursor.execute(query, values)
+        connection.commit()
+
+        print("Employee added successfully!")
+
     cursor.close()
     connection.close()
+
 
 def view_employees():
     connection = db_connection.db_conn()    
